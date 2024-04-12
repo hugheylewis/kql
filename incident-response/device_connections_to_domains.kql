@@ -1,0 +1,4 @@
+DeviceNetworkEvents
+| where DeviceName contains "HOSTNAME_HERE"
+| where isnotnull(AdditionalFields.query)
+| project AdditionalFields.query, RemoteIP, LocalIP
