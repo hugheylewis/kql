@@ -1,0 +1,7 @@
+DeviceNetworkEvents
+| where ActionType == "ConnectionAttempt"
+| extend ConnectionTime = bin(datetime_add('hour', -4, TimeGenerated), 15m) // Round 'TimeGenerated' to show the number of ports accessed within a 15 minute window. Converts to EST
+| summarize ScannedPorts = make_set(RemotePort), UniquePortCount = dcount(RemotePort) by LocalIP, ConnectionTime, RemoteIP
+| extend SortedScannedPorts = array_sort_asc(ScannedPorts)
+| project SourceIP = ConnectionTime, LocalIP, TargetedIP = RemoteIP, SortedScannedPorts, UniquePortCount
+| where UniquePortCount >= 10
